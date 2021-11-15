@@ -1,12 +1,16 @@
+from descontos import *
+
 class CalculadorDeDescontos(object):
 
     def calcula(self, orcamento):
 
-        if orcamento.total_itens > 5:
-            return orcamento.valor * 0.1
-        elif orcamento.valor > 500:
-            return orcamento.valor * 0.07
+        desconto = DescontoPorCincoItens(
+            DescontoPorQuinhentosReais(
+                SemDesconto()
+            )
+        )
 
+        return desconto.calcula(orcamento)
 
 if __name__ == "__main__":
 
