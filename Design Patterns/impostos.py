@@ -11,6 +11,7 @@ class Imposto(ABC):
         else:
             return self.__outro_imposto.calcula(orcamento)
 
+    @abstractmethod
     def calcula(self, orcamento):
         pass
 
@@ -34,7 +35,16 @@ class TemplateDeImpostoCondicional(Imposto):
     def taxacao_maxima(self, orcamento):
         pass
 
+
+def MAIS50(outra_funcao):
+    def wrapper(self, orcamento):
+        return outra_funcao(self, orcamento) + 50
+    return wrapper
+
+
 class ISS(Imposto):
+    
+    @MAIS50
     def calcula(self, orcamento):
         return orcamento.valor * 0.1 + self.calcula_outro_imposto(orcamento)
 
