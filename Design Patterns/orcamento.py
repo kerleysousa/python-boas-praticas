@@ -1,25 +1,96 @@
-class Orcamento(object):
+from abc import ABC, abstractclassmethod
 
-    EM_APROVACAO = 1
-    APROVADO = 2
-    REPROVADO = 3
-    FINALIZADO = 4
+class EstadoDeUmOrcamento(ABC):
+    
+    @abstractclassmethod
+    def aplica_desconto_extra(self, orcamento):
+        pass
+    
+    @abstractclassmethod
+    def aprova(self, orcamento):
+        pass
+
+    @abstractclassmethod
+    def reprova(self, orcamento):
+        pass
+
+    @abstractclassmethod
+    def finaliza(self, orcamento):
+        pass
+
+class EmAprovacao(EstadoDeUmOrcamento):
+    def aplica_desconto_extra(self, orcamento):
+        orcamento.adiciona_desconto_extra(orcamento.valor * 0.02)
+
+    def aprova(self, orcamento):
+        orcamento.estado_atual = Aprovado()
+
+    def reprova(self, orcamento):
+        orcamento.estado_atual = Reprovado()
+
+    def finaliza(self, orcamento):
+        raise Exception("Estado em aprovação não pode ir para finalizado.")
+
+class Aprovado(EstadoDeUmOrcamento):
+    def aplica_desconto_extra(self, orcamento):
+        orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
+
+    def aprova(self, orcamento):
+        raise Exception("Orcamento aprovado não pode ser aprovado novamente.")
+
+    def reprova(self, orcamento):
+        raise Exception("Não é possível reprovar um orçamento aprovado")
+
+    def finaliza(self, orcamento):
+        orcamento.estado_atual = Finalizado()
+    
+class Reprovado(EstadoDeUmOrcamento):
+    def aplica_desconto_extra(self, orcamento):
+        raise Exception("Orçamentos reprovados não recebem desconto extra.")
+
+    def aprova(self, orcamento):
+        raise Exception("Não é possível aprovar um orçamento reprovado")
+
+    def reprova(self, orcamento):
+        raise Exception("Orcamento reprovado não pode ser reprovado novamento.")
+
+    def finaliza(self, orcamento):
+        orcamento.estado_atual = Finalizado()
+
+class Finalizado(EstadoDeUmOrcamento):
+    def aplica_desconto_extra(self, orcamento):
+        raise Exception("Orçamentos reprovados não recebem desconto extra.")
+
+    def aprova(self, orcamento):
+        raise Exception("Orcamento está finalizado.")
+
+    def reprova(self, orcamento):
+        raise Exception("Orcamento está finalizado.")
+
+    def finaliza(self, orcamento):
+        raise Exception("Orcamento finalizado não pode ser finalizado novamente.")
+
+class Orcamento(object):
 
     def __init__(self):
         self.__itens = []
-        self.estado_atual = Orcamento.EM_APROVACAO
+        self.estado_atual = EmAprovacao()
         self.__desconto_extra = 0
 
-    def aplica_desconto_extra(self):
-        if self.estado_atual == Orcamento.EM_APROVACAO:
-            self.__desconto_extra += self.valor *0.02
-        if self.estado_atual == Orcamento.APROVADO:
-            self.__desconto_extra += self.valor *0.05
-        if self.estado_atual == Orcamento.REPROVADO:
-            raise Exception("Orçamentos reprovados não recebem desconto extra.")
-        if self.estado_atual == Orcamento.FINALIZADO:
-            raise Exception("Orçamentos reprovados não recebem desconto extra.")
+    def aprova(self):
+        self.estado_atual.aprova(orcamento)
 
+    def reprova(self):
+        self.estado_atual.reprova(orcamento)
+
+    def finaliza(self):
+        self.estado_atual.finaliza(orcamento)
+
+    def aplica_desconto_extra(self):
+        self.estado_atual.aplica_desconto_extra(self)
+
+    def adiciona_desconto_extra(self, desconto):
+        self.__desconto_extra += desconto
 
     @property
     def valor(self):
@@ -61,9 +132,5 @@ if __name__ == "__main__":
     orcamento.adiciona_itens(Item("Item 3", 300))
 
     print(orcamento.valor)
-    orcamento.aplica_desconto_extra()
-    print(orcamento.valor)
-    orcamento.estado_atual = Orcamento.APROVADO
-    orcamento.aplica_desconto_extra()
-    print(orcamento.valor)
-    print("\U0001f600")
+    orcamento.aprova()
+    orcamento.reprova()
