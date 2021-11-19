@@ -1,7 +1,10 @@
 from abc import ABC, abstractclassmethod
 
 class EstadoDeUmOrcamento(ABC):
-    
+
+    def __init__(self) -> None:
+        self.desconto_aplicado = False
+
     @abstractclassmethod
     def aplica_desconto_extra(self, orcamento):
         pass
@@ -20,7 +23,11 @@ class EstadoDeUmOrcamento(ABC):
 
 class EmAprovacao(EstadoDeUmOrcamento):
     def aplica_desconto_extra(self, orcamento):
-        orcamento.adiciona_desconto_extra(orcamento.valor * 0.02)
+        if (not self.desconto_aplicado):
+            orcamento.adiciona_desconto_extra(orcamento.valor * 0.02)
+            self.desconto_aplicado = True
+        else:
+            raise Exception("Desconto já aplicado.")
 
     def aprova(self, orcamento):
         orcamento.estado_atual = Aprovado()
@@ -33,7 +40,11 @@ class EmAprovacao(EstadoDeUmOrcamento):
 
 class Aprovado(EstadoDeUmOrcamento):
     def aplica_desconto_extra(self, orcamento):
-        orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
+        if (not self.desconto_aplicado):
+            orcamento.adiciona_desconto_extra(orcamento.valor * 0.05)
+            self.desconto_aplicado = True
+        else:
+            raise Exception("Desconto já aplicado")
 
     def aprova(self, orcamento):
         raise Exception("Orcamento aprovado não pode ser aprovado novamente.")
@@ -59,7 +70,7 @@ class Reprovado(EstadoDeUmOrcamento):
 
 class Finalizado(EstadoDeUmOrcamento):
     def aplica_desconto_extra(self, orcamento):
-        raise Exception("Orçamentos reprovados não recebem desconto extra.")
+        raise Exception("Orçamentos finalizado não recebem desconto extra.")
 
     def aprova(self, orcamento):
         raise Exception("Orcamento está finalizado.")
@@ -131,6 +142,20 @@ if __name__ == "__main__":
     orcamento.adiciona_itens(Item("Item 2", 200))
     orcamento.adiciona_itens(Item("Item 3", 300))
 
+    print("Orçamento sem desconto:")
     print(orcamento.valor)
+
+    print("Orçamento com desconto na fase de aprovação.")
+    orcamento.aplica_desconto_extra()
+    print(orcamento.valor)
+
+    print("Orçamento com desconto depois de aprovado.")
     orcamento.aprova()
-    orcamento.reprova()
+    orcamento.aplica_desconto_extra()
+    print(orcamento.valor)
+
+    print("Aplicando desconto a um orçamento finalizado.")
+    orcamento.finaliza()
+    orcamento.aplica_desconto_extra()
+    print(orcamento.valor)
+
