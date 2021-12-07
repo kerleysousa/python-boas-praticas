@@ -43,6 +43,8 @@ class Nota_Fiscal(object):
 
 if __name__ == "__main__":
 
+    from criador_nota_fiscal import CriadorNotaFiscal
+
     itens = [
         Item("Item A", 100),
         Item("Item B", 200)
@@ -53,3 +55,13 @@ if __name__ == "__main__":
         cnpj="12345678901234",
         itens=itens,
     )
+
+    nota_fiscal_com_builder = (CriadorNotaFiscal()
+        .com_razao_social("Loja da esquina")
+        .com_cnpj("12345678901234")
+        .com_itens(itens)
+        .constroi()
+    )
+
+    print(nota_fiscal.cnpj)
+    print(nota_fiscal_com_builder.cnpj)
