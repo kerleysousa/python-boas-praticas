@@ -1,3 +1,5 @@
+from datetime import date
+
 class Item(object):
     
     def __init__(self, descricao, valor):
@@ -14,7 +16,7 @@ class Item(object):
 
 class Nota_Fiscal(object):
 
-    def __init__(self, razao_social, cnpj, itens, data_emissao, detalhes):
+    def __init__(self, razao_social, cnpj, itens, data_emissao=date.today(), detalhes=""):
         self.__razao_social = razao_social
         self.__cnpj = cnpj
         self.__data_emissao = data_emissao
@@ -40,7 +42,7 @@ class Nota_Fiscal(object):
         return self.__detalhes
 
 if __name__ == "__main__":
-    from datetime import date
+
     itens = [
         Item("Item A", 100),
         Item("Item B", 200)
@@ -50,6 +52,4 @@ if __name__ == "__main__":
         razao_social="Loja da esquina",
         cnpj="12345678901234",
         itens=itens,
-        data_emissao=date.today(),
-        detalhes=""
     )
