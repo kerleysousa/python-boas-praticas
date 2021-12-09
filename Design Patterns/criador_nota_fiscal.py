@@ -10,6 +10,7 @@ class CriadorNotaFiscal(object):
         self.__data_emissao = None
         self.__itens = None
         self.__detalhes = None
+        self.__observadores = None
 
     def com_razao_social(self, razao_social):
         self.__razao_social = razao_social
@@ -26,6 +27,10 @@ class CriadorNotaFiscal(object):
     def com_itens(self, itens):
         self.__itens = itens
         return self
+
+    def com_observadores(self, observadores):
+        self.__observadores = observadores
+        return self
     
     def constroi(self):
         if self.__razao_social is None:
@@ -38,9 +43,12 @@ class CriadorNotaFiscal(object):
             raise Exception("Itens deve ser preenchido")
         if self.__detalhes is None:
             self.__detalhes = ""
+        if self.__observadores is None:
+            self.__observadores = ""
         
         return Nota_Fiscal(razao_social = self.__razao_social, 
             cnpj=self.__cnpj,
             itens=self.__itens,
             data_emissao=self.__data_emissao,
-            detalhes=self.__detalhes)
+            detalhes=self.__detalhes,
+            observadores=self.__observadores)

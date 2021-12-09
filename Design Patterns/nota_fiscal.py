@@ -1,5 +1,4 @@
 from datetime import date
-from observadores import imprime, envia_email, salva_banco
 
 class Item(object):
     
@@ -17,7 +16,7 @@ class Item(object):
 
 class Nota_Fiscal(object):
 
-    def __init__(self, razao_social, cnpj, itens, data_emissao=date.today(), detalhes=""):
+    def __init__(self, razao_social, cnpj, itens, data_emissao=date.today(), detalhes="", observadores=[]):
         self.__razao_social = razao_social
         self.__cnpj = cnpj
         self.__data_emissao = data_emissao
@@ -26,9 +25,8 @@ class Nota_Fiscal(object):
         self.__detalhes = detalhes
         self.__itens = itens
 
-        imprime(self)
-        envia_email(self)
-        salva_banco(self)
+        for observador in observadores:
+            observador(self)
     
     @property
     def razao_social(self):
@@ -49,6 +47,7 @@ class Nota_Fiscal(object):
 if __name__ == "__main__":
 
     from criador_nota_fiscal import CriadorNotaFiscal
+    from observadores import imprime, envia_email, salva_banco
 
     itens = [
         Item("Item A", 100),
@@ -59,6 +58,7 @@ if __name__ == "__main__":
         .com_razao_social("Loja da esquina")
         .com_cnpj("12345678901234")
         .com_itens(itens)
+        .com_observadores([imprime, envia_email, salva_banco])
         .constroi()
     )
 
