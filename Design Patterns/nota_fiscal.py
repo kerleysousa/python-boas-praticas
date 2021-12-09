@@ -1,4 +1,5 @@
 from datetime import date
+from observadores import imprime, envia_email, salva_banco
 
 class Item(object):
     
@@ -25,9 +26,9 @@ class Nota_Fiscal(object):
         self.__detalhes = detalhes
         self.__itens = itens
 
-        self.__imprime()
-        self.__envia_email()
-        self.__salva_banco()
+        imprime(self)
+        envia_email(self)
+        salva_banco(self)
     
     @property
     def razao_social(self):
@@ -44,15 +45,6 @@ class Nota_Fiscal(object):
     @property
     def detalhes(self):
         return self.__detalhes
-
-    def __imprime(self):
-        print(f"Imprimindo nota fiscal - CNPJ: {self.cnpj}")
-
-    def __envia_email(self):
-        print(f"Enviando por email nota fiscal - CNPJ: {self.cnpj}")
-
-    def __salva_banco(self):
-        print(f"Salvando no banco de dados nota fiscal - CNPJ: {self.cnpj}")
 
 if __name__ == "__main__":
 
