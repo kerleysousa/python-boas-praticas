@@ -24,6 +24,10 @@ class Nota_Fiscal(object):
             raise Exception("Detalhes da nota não pode ter mais do que 20 caracteres")
         self.__detalhes = detalhes
         self.__itens = itens
+
+        self.__imprime()
+        self.__envia_email()
+        self.__salva_banco()
     
     @property
     def razao_social(self):
@@ -41,6 +45,15 @@ class Nota_Fiscal(object):
     def detalhes(self):
         return self.__detalhes
 
+    def __imprime(self):
+        print(f"Imprimindo nota fiscal - CNPJ: {self.cnpj}")
+
+    def __envia_email(self):
+        print(f"Enviando por email nota fiscal - CNPJ: {self.cnpj}")
+
+    def __salva_banco(self):
+        print(f"Salvando no banco de dados nota fiscal - CNPJ: {self.cnpj}")
+
 if __name__ == "__main__":
 
     from criador_nota_fiscal import CriadorNotaFiscal
@@ -50,12 +63,6 @@ if __name__ == "__main__":
         Item("Item B", 200)
     ]
 
-    nota_fiscal = Nota_Fiscal(
-        razao_social="Loja da esquina",
-        cnpj="12345678901234",
-        itens=itens,
-    )
-
     nota_fiscal_com_builder = (CriadorNotaFiscal()
         .com_razao_social("Loja da esquina")
         .com_cnpj("12345678901234")
@@ -63,5 +70,4 @@ if __name__ == "__main__":
         .constroi()
     )
 
-    print(nota_fiscal.cnpj)
     print(nota_fiscal_com_builder.cnpj)
